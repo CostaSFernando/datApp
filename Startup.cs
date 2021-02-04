@@ -26,11 +26,21 @@ namespace datApp
 
         public IConfiguration Configuration { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddCors();
+            services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(
+                builder =>
+                {
+                    builder.WithOrigins("*")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+        });
             // requires using Microsoft.Extensions.Options
             services.Configure<TalktelecomDbDatabaseSettings>(
                 Configuration.GetSection(nameof(TalktelecomDbDatabaseSettings)));
@@ -66,10 +76,7 @@ namespace datApp
 
             app.UseRouting();
 
-            app.UseCors(x => x
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowAnyOrigin());
+            app.UseCors();
 
             app.UseAuthorization();
 
