@@ -30,6 +30,7 @@ namespace datApp
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors();
             // requires using Microsoft.Extensions.Options
             services.Configure<TalktelecomDbDatabaseSettings>(
                 Configuration.GetSection(nameof(TalktelecomDbDatabaseSettings)));
@@ -43,7 +44,6 @@ namespace datApp
             services.AddSingleton<DataService>();
 
             services.AddControllers();
-            services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins("http://localhost:4200/").AllowAnyMethod().AllowAnyHeader()));
 
             services.AddSwaggerGen(c =>
             {
@@ -66,7 +66,11 @@ namespace datApp
 
             app.UseRouting();
 
-            app.UseCors("ApiCorsPolicy");
+            app.UseCors(x => x
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin());
+
             app.UseAuthorization();
 
 
